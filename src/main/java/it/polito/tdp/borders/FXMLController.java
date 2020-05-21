@@ -11,6 +11,7 @@ import it.polito.tdp.borders.model.Country;
 import it.polito.tdp.borders.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
@@ -27,22 +28,38 @@ public class FXMLController {
 	@FXML // fx:id="txtAnno"
 	private TextField txtAnno; // Value injected by FXMLLoader
 
+	@FXML
+	private ComboBox<Country> cmbBox;
+
 	@FXML // fx:id="txtResult"
 	private TextArea txtResult; // Value injected by FXMLLoader
 
 	@FXML
 	void doCalcolaConfini(ActionEvent event) {
 		txtResult.clear();
-		int anno = Integer.parseInt(txtAnno.getText());
+		
+		int anno;
+		
+		try {
+			anno = Integer.parseInt(txtAnno.getText());
 
-		if(anno < 1816 || anno > 2016) {
-			txtResult.setText("Inserire un anno compreso tra 1816 e 2016");
+			if(anno < 1816 || anno > 2016) {
+				txtResult.setText("Inserire un anno compreso tra 1816 e 2016");
+				return;
+			}
+		} catch(NumberFormatException e ) {
+			txtResult.setText("Inserire un anno nell'intervallo 1816 - 2016");
 			return;
 		}
 
 		try {
 			this.model.creaGrafo(anno);	
+
 			List<Country> countries = model.getCountries();
+
+			//Popolo la COMBO BOX
+			cmbBox.getItems().addAll(countries); 
+
 
 			//*************Numero di componenti connesse al grafo*************
 			txtResult.appendText(String.format("Numero componenti connesse %d\n", this.model.getNumbersOfConnectedComponents()));
@@ -59,10 +76,35 @@ public class FXMLController {
 
 	}
 
+	@FXML
+	void doTrovaTuttiVicini(ActionEvent event) {
+		txtResult.clear();
+		
+		if(cmbBox.getItems().isEmpty()) {
+			txtResult.setText("Grafo VUOTO! Crea un grafo o scegli un anno diverso");
+		}
+		
+		Country countrySelected = cmbBox.getValue();
+		if(countrySelected == null) {
+			txtResult.setText("Scegli prima uno Stato");
+		}
+		
+		try {
+			List<Country> countryRaggiungibili = model.getCountryRaggiungibili(countrySelected);
+			for(Country c : countryRaggiungibili) {
+				txtResult.appendText(String.format("%s\n", c));
+			}
+			
+		} catch(RuntimeException e) {
+			txtResult.setText("Lo Stato selezionato non è nel grafo");
+		}
+		
+	}
 
 	@FXML // This method is called by the FXMLLoader when initialization is complete
 	void initialize() {
 		assert txtAnno != null : "fx:id=\"txtAnno\" was not injected: check your FXML file 'Scene.fxml'.";
+		assert cmbBox != null : "fx:id=\"cmbBox\" was not injected: check your FXML file 'Scene.fxml'.";
 		assert txtResult != null : "fx:id=\"txtResult\" was not injected: check your FXML file 'Scene.fxml'.";
 
 	}

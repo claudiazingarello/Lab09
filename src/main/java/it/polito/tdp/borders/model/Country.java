@@ -65,7 +65,7 @@ public class Country implements Comparable<Country> {
 
 	@Override
 	public String toString() {
-		return "Country [StateAbb=" + StateAbb + ", cCode=" + cCode + ", StateName=" + StateName + "]";
+		return StateAbb +" "+ cCode +" "+ StateName;
 	}
 	
 	
