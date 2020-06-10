@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.RuntimeErrorException;
-
 import org.jgrapht.Graph;
 import org.jgrapht.Graphs;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
@@ -30,11 +28,11 @@ public class Model {
 	private CountryIdMap countryIdMap;
 
 	public Model() {
-		dao = new BordersDAO();
-		countryList = new ArrayList<>();
 	}
 
 	public void creaGrafo (int year) {
+		dao = new BordersDAO();
+		countryList = new ArrayList<>();
 		this.grafo = new SimpleGraph<Country, DefaultEdge>(DefaultEdge.class);
 
 		countryIdMap = new CountryIdMap();
