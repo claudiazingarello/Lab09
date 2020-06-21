@@ -99,12 +99,13 @@ public class Model {
 		if(!grafo.vertexSet().contains(selected)) {
 			throw new RuntimeException("Lo stato selezionato non è presente nel grafo");
 		}
-		
+
 		List<Country> countryRaggiungibili = this.mostraTuttiViciniJGRAPHT(selected);
 		System.out.println("Stati raggiungibili " + countryRaggiungibili.size());
 		return countryRaggiungibili;
 	}
 	
+
 	//Libreria JGRAPHT
 	public List<Country> mostraTuttiViciniJGRAPHT(Country selected){
 		/*
